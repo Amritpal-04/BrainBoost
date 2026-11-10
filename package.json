@@ -1,0 +1,11 @@
+{
+  "name": "brainboost",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently --kill-others --names backend,frontend \"npm --prefix backend start\" \"npm --prefix frontend start\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

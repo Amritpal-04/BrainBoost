@@ -1,6 +1,7 @@
 # BrainBoost --- Team README
 
-> **Project:** BrainBoost | **Type:** Backend Engineering + full-stack web application | **Team:** 3–4 members
+> **Project:** BrainBoost \| **Type:** Full-stack web application \|
+> **Team:** 3--4 members
 
 ## 1. Project overview
 
@@ -62,28 +63,36 @@ features.
 incomplete features. Multiplayer, chat, payments and AI-generated
 questions are out of scope for the first release.
 
-## 3. Technology stack
+## 3. Technology stack --- MERN
 
   -----------------------------------------------------------------------
   Layer                   Technology              Responsibility
   ----------------------- ----------------------- -----------------------
-  Frontend                React.js, JavaScript     Components, UI and frontend logic
+  Frontend                React.js, JavaScript    Components, UI and
+                                                  frontend logic
 
   Styling                 Tailwind CSS            Responsive styling
 
-  Backend                 Node.js, Express.js,    REST API and business
+  Backend                 Node.js, Express.js,    REST APIs and business
                           JavaScript              logic
 
-  Database                PostgreSQL              Persistent data
+  Database                MongoDB                 Persistent document
+                                                  storage
 
-  ORM                     Prisma                  Schema, migrations,
-                                                  database access
+  ODM                     Mongoose                MongoDB models,
+                                                  validation and database
+                                                  access
 
   Password security       bcrypt                  Password hashing
 
+  Input validation        Zod                     Validate request data
+
   Authentication          Secure HTTP-only        Authenticated access
-                          session cookie or       
-                          carefully designed JWT  
+                          cookie-based sessions   
+
+  Security middleware     Helmet, CORS,           HTTP security,
+                          express-rate-limit      cross-origin policy and
+                                                  request throttling
 
   API testing             Postman                 Endpoint and error-case
                                                   testing
@@ -92,13 +101,16 @@ questions are out of scope for the first release.
                                                   review
 
   Deployment              Vercel +                Hosting
-                          Node-compatible host +  
-                          managed PostgreSQL      
+                          Node-compatible backend 
+                          host + MongoDB Atlas    
   -----------------------------------------------------------------------
 
-Choose one authentication strategy before implementation. Never store
-plain-text passwords. Avoid putting long-lived tokens in `localStorage`
-by default.
+**MERN** means MongoDB, Express.js, React.js and Node.js. JavaScript
+will be used across the frontend and backend.
+
+Never store plain-text passwords. Keep session credentials out of
+browser local storage. Use HTTPS and secure cookie settings in
+production.
 
 ## 4. Roles and permissions
 
@@ -181,90 +193,135 @@ management, analytics and leaderboard APIs.
 
 ### Shared responsibilities
 
-Database schema/migrations, API contracts, shared UI components,
+MongoDB data models, API contracts, shared UI components,
 authentication, error formats, testing and release process. Do not
 create separate databases or duplicate authentication systems.
 
-## 6. UI/UX design status — to be decided by the team
+## 6. UI/UX design status --- to be decided by the team
 
-**Important: Page designs have not been finalised yet.** The colours, typography, layouts, navigation, component style and overall visual theme are still open decisions. Do not treat any sample design, colour palette or layout from an early discussion as final.
+**Important: Page designs have not been finalised yet.** The colours,
+typography, layouts, navigation, component style and overall visual
+theme are still open decisions. Do not treat any sample design, colour
+palette or layout from an early discussion as final.
 
 Before building the final page interfaces, the team should:
-1. Review the project requirements and intended child users.
-2. Discuss and agree on a consistent visual direction for the student and admin areas.
-3. Create wireframes for the key pages (login/register, student dashboard, quiz, result, admin dashboard and question management).
-4. Review the wireframes together and collect feedback.
-5. Agree on shared design tokens: colours, typography, spacing, borders, buttons, form fields and cards.
-6. Create reusable components and document the approved decisions here.
-7. Check the designs on mobile, tablet and desktop before implementation is considered complete.
+
+1.  Review the project requirements and intended child users.
+2.  Discuss and agree on a consistent visual direction for the student
+    and admin areas.
+3.  Create wireframes for the key pages (login/register, student
+    dashboard, quiz, result, admin dashboard and question management).
+4.  Review the wireframes together and collect feedback.
+5.  Agree on shared design tokens: colours, typography, spacing,
+    borders, buttons, form fields and cards.
+6.  Create reusable components and document the approved decisions here.
+7.  Check the designs on mobile, tablet and desktop before
+    implementation is considered complete.
 
 ### Design principles to consider
-- Keep the student experience clear, friendly and easy for children to understand.
-- Keep admin pages practical and efficient for managing questions and users.
-- Make questions and answer choices the main focus of quiz screens.
-- Use readable text, clear instructions and accessible colour contrast.
-- Include loading, empty, success and error states.
-- Avoid distracting animations, flashing effects and stressful timers.
-- Ensure touch targets are comfortable on phones and controls are keyboard accessible.
+
+-   Keep the student experience clear, friendly and easy for children to
+    understand.
+-   Keep admin pages practical and efficient for managing questions and
+    users.
+-   Make questions and answer choices the main focus of quiz screens.
+-   Use readable text, clear instructions and accessible colour
+    contrast.
+-   Include loading, empty, success and error states.
+-   Avoid distracting animations, flashing effects and stressful timers.
+-   Ensure touch targets are comfortable on phones and controls are
+    keyboard accessible.
 
 ### Design decisions log
 
-| Decision | Status | Owner / notes |
-|---|---|---|
-| Overall visual theme | Pending | Decide as a team |
-| Colour palette | Pending | Decide as a team |
-| Typography | Pending | Decide as a team |
-| Student navigation and layout | Pending | Wireframe and review |
-| Admin navigation and layout | Pending | Wireframe and review |
-| Shared component styles | Pending | Define after wireframes |
-| Responsive behaviour | Pending | Agree and test across screen sizes |
+  Decision                        Status    Owner / notes
+  ------------------------------- --------- ------------------------------------
+  Overall visual theme            Pending   Decide as a team
+  Colour palette                  Pending   Decide as a team
+  Typography                      Pending   Decide as a team
+  Student navigation and layout   Pending   Wireframe and review
+  Admin navigation and layout     Pending   Wireframe and review
+  Shared component styles         Pending   Define after wireframes
+  Responsive behaviour            Pending   Agree and test across screen sizes
 
-Do not independently invent a different design for each page. Once the team approves the design direction, all pages should follow the same documented system.
+Do not independently invent a different design for each page. Once the
+team approves the design direction, all pages should follow the same
+documented system.
 
 ## 7. Backend architecture
 
-Suggested structure:
+Suggested JavaScript backend structure:
 
 ``` text
 backend/
 ├── src/
-│   ├── app.ts
-│   ├── server.ts
+│   ├── app.js
+│   ├── server.js
 │   ├── config/
+│   │   └── db.js
 │   ├── middleware/
-│   │   ├── authenticate.ts
-│   │   ├── authorizeRole.ts
-│   │   └── errorHandler.ts
-│   ├── modules/
-│   │   ├── auth/
-│   │   ├── users/
-│   │   ├── categories/
-│   │   ├── questions/
-│   │   ├── quiz/
-│   │   ├── attempts/
-│   │   ├── analytics/
-│   │   └── admin/
+│   │   ├── authenticate.js
+│   │   ├── authorizeRole.js
+│   │   └── errorHandler.js
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Category.js
+│   │   ├── Question.js
+│   │   ├── QuizAttempt.js
+│   │   └── Session.js
+│   ├── controllers/
+│   ├── routes/
+│   ├── services/
+│   ├── validators/
 │   └── utils/
-├── prisma/
-│   ├── schema.prisma
-│   └── seed.ts
 ├── tests/
 ├── .env.example
 └── package.json
 ```
 
+Suggested frontend structure:
+
+``` text
+frontend/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── features/
+│   ├── services/
+│   ├── hooks/
+│   ├── context/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── .env.example
+└── package.json
+```
+
 Request flow: **Route → validation → authentication/authorization →
-controller → service → Prisma/database → response.**
+controller → service → Mongoose model/MongoDB → response.**
 
-Keep business logic in services, not route files.
+Keep business logic in services, not route files. Use Mongoose schemas
+for document structure, field validation, indexes and references where
+appropriate.
 
-### Suggested database models
+### Suggested MongoDB collections
 
-Start with: - `User` - `Category` - `Question` - `QuizAttempt` -
-`UserAnswer` - `Achievement` and `UserAchievement` (later)
+Start with:
 
-Agree on relationships, indexes and deletion behaviour before creating
-migrations.
+-   `users`
+-   `categories`
+-   `questions`
+-   `quizattempts`
+-   `sessions`
+-   `achievements` and user achievement records (later)
+
+Choose references or embedded documents based on how the data is queried
+and updated. Add indexes for frequently queried fields such as
+normalized email, category, difficulty, user and creation date. Enforce
+unique email at the database level as well as checking it in application
+logic.
 
 ### Critical quiz security rule
 
@@ -335,22 +392,32 @@ Error:
 ```
 
 Document pagination and filtering for list endpoints. Never return
-password hashes, secrets or correct answers in student responses.
+password hashes, session secrets or correct answers in student
+responses.
 
 ## 9. Git and team workflow
 
 Use one shared repository with `frontend/` and `backend/`.
 
-Suggested branches: - `main` --- stable release code - `develop` ---
-integrated development - `feature/student-dashboard` -
-`feature/quiz-engine` - `feature/admin-questions` - `feature/auth-api`
+Suggested branches:
 
-For every task: 1. Pick an issue from the project board. 2. Create a
-feature branch from the agreed base. 3. Implement one focused feature.
-4. Run linting, type checks and relevant tests. 5. Open a pull request
-with screenshots or API test evidence. 6. Get another teammate to
-review. 7. Merge after review and checks pass. 8. Test the merged
-feature in the shared development environment.
+-   `main` --- stable release code
+-   `develop` --- integrated development
+-   `feature/student-dashboard`
+-   `feature/quiz-engine`
+-   `feature/admin-questions`
+-   `feature/auth-api`
+
+For every task:
+
+1.  Pick an issue from the project board.
+2.  Create a feature branch from the agreed base.
+3.  Implement one focused feature.
+4.  Run linting and relevant tests.
+5.  Open a pull request with screenshots or API test evidence.
+6.  Get another teammate to review.
+7.  Merge after review and checks pass.
+8.  Test the merged feature in the shared development environment.
 
 Commit examples:
 
@@ -363,11 +430,15 @@ docs: update API documentation
 refactor: move scoring logic into quiz service
 ```
 
-Coordination rules: - Have a short daily or every-other-day check-in. -
-Review progress and blockers weekly. - Keep tasks small (ideally 1--3
-working days). - Agree on API contracts before parallel work. - Assign
-one person to coordinate Prisma schema changes and migrations. - Never
-commit `.env`, credentials or production secrets.
+Coordination rules:
+
+-   Have a short daily or every-other-day check-in.
+-   Review progress and blockers weekly.
+-   Keep tasks small (ideally 1--3 working days).
+-   Agree on API contracts before parallel work.
+-   Assign one person to coordinate MongoDB model changes and database
+    indexes.
+-   Never commit `.env`, credentials or production secrets.
 
 ## 10. Testing checklist
 
@@ -405,29 +476,39 @@ commit `.env`, credentials or production secrets.
 -   [ ] Keyboard navigation works where practical
 -   [ ] Environment variables configured
 -   [ ] HTTPS enabled
--   [ ] Database migrations applied
+-   [ ] MongoDB indexes and production database configuration applied
 -   [ ] Production smoke test completed
 -   [ ] No secrets committed to Git
 
 ## 11. Privacy and responsible design
 
-Because children may use this website: - Collect only information needed
-to operate the service. - Prefer nicknames over public full names. -
-Never expose children's email addresses or private performance
-publicly. - Make leaderboard participation optional. - Restrict parent
-views to explicitly linked accounts. - Protect admin access. - Provide a
-clear privacy notice and obtain appropriate parent/guardian consent
-before real-world use, as applicable. - Do not claim the site improves
-intelligence or academic results without proper evaluation.
+Because children may use this website:
+
+-   Collect only information needed to operate the service.
+-   Prefer nicknames over public full names.
+-   Never expose children's email addresses or private performance
+    publicly.
+-   Make leaderboard participation optional.
+-   Restrict parent views to explicitly linked accounts.
+-   Protect admin access.
+-   Provide a clear privacy notice and obtain appropriate
+    parent/guardian consent before real-world use, as applicable.
+-   Do not claim the site improves intelligence or academic results
+    without proper evaluation.
 
 ## 12. Definition of done
 
-A feature is complete only when: - UI follows the shared design
-system. - It is connected to the real backend (unless clearly marked
-prototype). - Validation and error states work. - Permissions are
-enforced on the server. - Relevant tests pass. - Code has been reviewed
-and merged. - Mobile and desktop layouts work. - Relevant documentation
-is updated.
+A feature is complete only when:
+
+-   UI follows the shared design system.
+-   It is connected to the real backend (unless clearly marked
+    prototype).
+-   Validation and error states work.
+-   Permissions are enforced on the server.
+-   Relevant tests pass.
+-   Code has been reviewed and merged.
+-   Mobile and desktop layouts work.
+-   Relevant documentation is updated.
 
 ## 13. Initial team checklist
 
@@ -435,9 +516,9 @@ is updated.
 -   [ ] Assign Team A and Team B page ownership.
 -   [ ] Create GitHub repository and project board.
 -   [ ] Agree on colours, typography, spacing and shared components.
--   [ ] Draw the database ER diagram.
+-   [ ] Design the MongoDB collections and document relationships.
 -   [ ] Agree on API request/response formats.
--   [ ] Set up React.js, Express, JavaScript, PostgreSQL and Prisma.
+-   [ ] Set up React.js, Express.js, JavaScript, MongoDB and Mongoose.
 -   [ ] Add `.env.example`; keep actual `.env` private.
 -   [ ] Build and test `/api/v1/health`.
 -   [ ] Start student authentication and admin question-management
@@ -449,24 +530,30 @@ Existing platforms such as Khan Academy, Khan Academy Kids and Prodigy
 already offer overlapping educational practice, maths activities,
 progress features or game-based learning.
 
-Position BrainBoost honestly around its focused combination: - Mental
-maths and quick calculation rounds - Logical reasoning and pattern
-puzzles - Clear speed-and-accuracy feedback - Topic-wise progress in a
-simple child-friendly interface - An admin-managed question bank
+Position BrainBoost honestly around its focused combination:
+
+-   Mental maths and quick calculation rounds
+-   Logical reasoning and pattern puzzles
+-   Clear speed-and-accuracy feedback
+-   Topic-wise progress in a simple child-friendly interface
+-   An admin-managed question bank
 
 Do not claim these features are entirely unique. Validate the product's
 usability and value through feedback from children and parents.
 
 ## 15. Project success target
 
-At project completion, the team should demonstrate: 1. A student can
-register and log in. 2. The student can select a practice category and
-difficulty. 3. The student can complete a quiz on mobile or desktop. 4.
-The backend checks answers and calculates the score. 5. Results and
-progress are saved in PostgreSQL. 6. An admin can manage the question
-bank. 7. Protected routes enforce the correct roles. 8. The application
-is deployed and the team can explain its architecture, database, APIs,
-security and testing.
+At project completion, the team should demonstrate:
+
+1.  A student can register and log in.
+2.  The student can select a practice category and difficulty.
+3.  The student can complete a quiz on mobile or desktop.
+4.  The backend checks answers and calculates the score.
+5.  Results and progress are saved in MongoDB.
+6.  An admin can manage the question bank.
+7.  Protected routes enforce the correct roles.
+8.  The application is deployed and the team can explain its
+    architecture, database, APIs, security and testing.
 
 **Build a small, reliable learning product first. Add advanced features
 only when the main student and admin workflows are stable.**
@@ -474,10 +561,11 @@ only when the main student and admin workflows are stable.**
 ## Useful documentation
 
 -   React: https://react.dev/learn
--   JavaScript: https://www.javascriptlang.org/docs/
+-   JavaScript: https://developer.mozilla.org/en-US/docs/Web/JavaScript
 -   Express: https://expressjs.com/
--   Prisma: https://www.prisma.io/docs
--   PostgreSQL: https://www.postgresql.org/docs/
+-   Node.js: https://nodejs.org/docs/latest/api/
+-   MongoDB: https://www.mongodb.com/docs/
+-   Mongoose: https://mongoosejs.com/docs/
 -   Tailwind CSS: https://tailwindcss.com/docs
 -   GitHub pull requests: https://docs.github.com/en/pull-requests
 
