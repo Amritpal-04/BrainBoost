@@ -19,6 +19,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 const practiceModes = [
   {
@@ -49,6 +50,39 @@ const practiceModes = [
 const difficulties = ["Easy", "Medium", "Hard"];
 const panelClass = "rounded-2xl border border-violet-100 bg-white";
 const practiceLinkClass = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg text-sm font-bold text-violet-700 hover:text-violet-900 hover:underline";
+const genderLabels = {
+  male: "Male",
+  female: "Female",
+  woman: "Woman",
+  man: "Man",
+  nonbinary: "Non-binary",
+  other: "Other",
+  "prefer-not-to-say": "Prefer not to say",
+};
+const educationLevelLabels = {
+  primary: "Primary school",
+  middle: "Middle school",
+  high: "High school",
+  college: "College or university",
+  other: "Other",
+};
+const learningGoalLabels = {
+  math: "Improve math skills",
+  logic: "Build logical thinking",
+  calculation: "Improve calculation speed",
+  confidence: "Build learning confidence",
+  other: "Other",
+};
+
+function formatBirthDate(value) {
+  if (!value) {
+    return "Unavailable";
+  }
+
+  const [year, month, day] = String(value).slice(0, 10).split("-").map(Number);
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "long" })
+    .format(new Date(year, month - 1, day));
+}
 
 function PracticeLink() {
   return (
@@ -191,6 +225,7 @@ export function StudentProgress() {
 
 export function StudentProfile() {
   const { user, name, initials } = useOutletContext();
+  const { theme, setTheme } = useTheme();
 
   return (
     <>
@@ -206,7 +241,61 @@ export function StudentProfile() {
             <dt className="text-sm font-medium text-slate-600">Email address</dt>
             <dd className="mt-1 wrap-anywhere font-bold">{user?.email || "Unavailable"}</dd>
           </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Username</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{user?.username ? `@${user.username}` : "Unavailable"}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Birthday</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{formatBirthDate(user?.birthDate)}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Gender</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{genderLabels[user?.gender] || "Unavailable"}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Phone number</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{user?.phoneNumber || "Unavailable"}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Phone country</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{user?.phoneCountry || "Unavailable"}</dd>
+          </div>
+          {user?.educationLevel && (
+            <div>
+              <dt className="text-sm font-medium text-slate-600">Education level</dt>
+              <dd className="mt-1 wrap-anywhere font-bold">{educationLevelLabels[user.educationLevel] || user.educationLevel}</dd>
+            </div>
+          )}
+          {user?.learningGoal && (
+            <div>
+              <dt className="text-sm font-medium text-slate-600">Learning goal</dt>
+              <dd className="mt-1 wrap-anywhere font-bold">{learningGoalLabels[user.learningGoal] || user.learningGoal}</dd>
+            </div>
+          )}
         </dl>
+        <div className="mt-6 border-t border-slate-200 pt-5">
+          <h2 className="text-lg font-extrabold">Appearance</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-600">
+            Choose how BrainBoost looks on this device.
+          </p>
+          <label htmlFor="theme-preference" className="mt-5 block text-sm font-medium text-slate-600">
+            Website theme
+          </label>
+          <select
+            id="theme-preference"
+            value={theme}
+            onChange={(event) => setTheme(event.target.value)}
+            className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-900 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          >
+            <option value="default">Default (recommended)</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Default follows your device’s appearance setting.
+          </p>
+        </div>
       </section>
     </>
   );

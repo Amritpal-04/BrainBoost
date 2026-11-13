@@ -48,7 +48,7 @@ export default function StudentLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f7fc] text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-violet-100 bg-white">
         <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-4 px-4 sm:px-8 md:grid-cols-[1fr_auto_1fr]">
           <Link to="/home" className="my-4 flex w-fit items-center gap-2.5 rounded-lg font-extrabold tracking-tight">
