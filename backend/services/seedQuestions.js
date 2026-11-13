@@ -7,6 +7,9 @@ async function seedQuestions() {
     return;
   }
 
+  const keys = questions.map((question) => question.key);
+  await Question.deleteMany({ key: { $nin: keys } });
+
   await Question.bulkWrite(
     questions.map((question) => ({
       updateOne: {

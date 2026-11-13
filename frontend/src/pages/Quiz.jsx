@@ -28,7 +28,12 @@ export default function Quiz() {
   useEffect(() => {
     if (!mode) return undefined;
     let active = true;
-    fetchQuestions({ modeId, topic })
+    setLoading(true);
+    setError("");
+    setResult(null);
+    setStep(0);
+    setSelected({});
+    fetchQuestions({ modeId, topic, difficulty })
       .then((data) => {
         if (active) setQuestions(data);
       })
@@ -41,7 +46,7 @@ export default function Quiz() {
     return () => {
       active = false;
     };
-  }, [mode, modeId, topic]);
+  }, [mode, modeId, topic, difficulty]);
 
   if (!mode) {
     return <Navigate to="/home#practice" replace />;
@@ -86,7 +91,7 @@ export default function Quiz() {
           {mode.name}{topic ? ` · ${topic}` : ""} · {difficulty}
         </p>
 
-        {loading && <p className="mt-6 text-slate-600">Loading your two questions…</p>}
+        {loading && <p className="mt-6 text-slate-600">Loading questions…</p>}
         {!loading && error && !result && <p className="mt-6 text-sm font-semibold text-rose-700">{error}</p>}
         {!loading && !error && questions.length === 0 && (
           <p className="mt-6 text-slate-600">No questions are available for this topic yet.</p>

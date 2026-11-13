@@ -21,11 +21,19 @@ const listQuestions = async (req, res) => {
     }
 
     const topic = String(req.query.topic || "");
+    const difficulty = String(req.query.difficulty || "");
     if (topics.length > 0 && !topics.includes(topic)) {
       return res.status(400).json({ success: false, message: "Choose a topic before starting." });
     }
+    if (!difficulties.includes(difficulty)) {
+      return res.status(400).json({ success: false, message: "Choose a difficulty before starting." });
+    }
 
-    const questions = await Question.find({ modeId, topic: topics.length ? topic : "" })
+    const questions = await Question.find({
+      modeId,
+      topic: topics.length ? topic : "",
+      difficulty,
+    })
       .sort({ key: 1 })
       .select("key prompt choices")
       .lean();
@@ -57,7 +65,7 @@ const submitQuiz = async (req, res) => {
     }
 
     const storedTopic = topics.length ? topic : "";
-    const questions = await Question.find({ modeId, topic: storedTopic }).sort({ key: 1 }).lean();
+    const questions = await Question.find({ modeId, topic: storedTopic, difficulty }).sort({ key: 1 }).lean();
     if (questions.length === 0) {
       return res.status(404).json({ success: false, message: "No questions are available for that topic." });
     }

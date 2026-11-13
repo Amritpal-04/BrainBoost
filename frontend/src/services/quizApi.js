@@ -20,8 +20,8 @@ async function request(path, options = {}) {
   return result.data;
 }
 
-export function fetchQuestions({ modeId, topic }) {
-  const params = new URLSearchParams({ mode: modeId });
+export function fetchQuestions({ modeId, topic, difficulty }) {
+  const params = new URLSearchParams({ mode: modeId, difficulty });
   if (topic) params.set("topic", topic);
   return request(`/quiz/questions?${params}`);
 }
