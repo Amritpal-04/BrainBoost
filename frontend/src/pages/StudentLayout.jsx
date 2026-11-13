@@ -23,7 +23,7 @@ const navigation = [
 
 function getStoredUser() {
   try {
-    return JSON.parse(localStorage.getItem("user") || "null");
+    return JSON.parse(sessionStorage.getItem("user") || "null");
   } catch {
     return null;
   }
@@ -31,7 +31,7 @@ function getStoredUser() {
 
 export default function StudentLayout() {
   const navigate = useNavigate();
-  if (!localStorage.getItem("token")) {
+  if (!sessionStorage.getItem("token")) {
     return <Navigate to="/login" replace />;
   }
 
@@ -41,8 +41,8 @@ export default function StudentLayout() {
     .map((part) => Array.from(part)[0]).join("").toUpperCase();
 
   function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     handleSuccess("You have logged out.");
     navigate("/login", { replace: true });
   }

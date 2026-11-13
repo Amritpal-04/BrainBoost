@@ -35,8 +35,8 @@ function Login() {
         return;
       }
 
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user));
+      sessionStorage.setItem("token", result.token);
+      sessionStorage.setItem("user", JSON.stringify(result.user));
       handleSuccess(result.message || "Welcome back!");
       navigate("/home");
     } catch (error) {
