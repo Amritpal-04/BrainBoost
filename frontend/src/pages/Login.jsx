@@ -53,11 +53,11 @@ function Login() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-violet-50 via-white to-cyan-50 px-4 py-10">
+    <main className="auth-page flex min-h-screen items-center justify-center bg-gradient-to-br from-violet-50 via-white to-cyan-50 px-4 py-10">
       <section className="grid w-full max-w-5xl overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-violet-950/10 md:grid-cols-2">
         <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 p-12 text-white md:flex">
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10" />
-          <div className="absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-cyan-300/10" />
+          <div className="auth-bubble auth-bubble--top absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10" />
+          <div className="auth-bubble auth-bubble--bottom absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-cyan-300/10" />
           <div className="relative flex items-center gap-3">
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/15">
               <Brain size={25} />
