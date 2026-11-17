@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Home, { PracticeSetup, StudentProfile, StudentProgress } from './pages/Home';
+import Quiz from './pages/Quiz';
 import StudentLayout from './pages/StudentLayout';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/home" element={<StudentLayout />}>
           <Route index element={<Home />} />
           <Route path="practice/:modeId" element={<PracticeSetup />} />
+          <Route path="practice/:modeId/quiz" element={<Quiz />} />
           <Route path="progress" element={<StudentProgress />} />
           <Route path="profile" element={<StudentProfile />} />
         </Route>
