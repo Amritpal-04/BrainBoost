@@ -222,11 +222,11 @@ export default function Home() {
           </a>
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 hidden w-[36%] place-items-center md:grid">
-          <div className="absolute size-64 rounded-full border border-white/15" />
-          <div className="absolute size-52 rounded-full border border-white/20" />
-          <div className="relative grid size-32 rotate-6 place-items-center rounded-4xl border border-white/30 bg-white/15 text-white shadow-xl shadow-indigo-950/20">
-            <Brain size={76} strokeWidth={1.5} />
-            <Sparkles size={29} className="absolute -top-4 -right-5 text-amber-200" />
+          <div className="dashboard-hero-ring dashboard-hero-ring--outer absolute size-64 rounded-full border border-white/15" />
+          <div className="dashboard-hero-ring dashboard-hero-ring--inner absolute size-52 rounded-full border border-white/20" />
+          <div className="dashboard-hero-card relative grid size-32 rotate-6 place-items-center rounded-4xl border border-white/30 bg-white/15 text-white shadow-xl shadow-indigo-950/20">
+            <Brain className="dashboard-hero-brain" size={76} strokeWidth={1.5} />
+            <Sparkles className="dashboard-hero-sparkle absolute -top-4 -right-5 text-amber-200" size={29} />
           </div>
         </div>
       </section>

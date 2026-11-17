@@ -48,8 +48,53 @@ body {
   68% { transform: translate(14px, 18px) scale(0.96); }
 }
 
+.dashboard-hero-ring--outer {
+  animation: dashboard-hero-ring 7s ease-in-out infinite;
+}
+
+.dashboard-hero-ring--inner {
+  animation: dashboard-hero-ring 7s ease-in-out -3.5s infinite;
+}
+
+.dashboard-hero-card {
+  animation: dashboard-hero-float 4s ease-in-out infinite;
+}
+
+.dashboard-hero-brain {
+  animation: dashboard-hero-pulse 4s ease-in-out infinite;
+}
+
+.dashboard-hero-sparkle {
+  animation: dashboard-hero-twinkle 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes dashboard-hero-ring {
+  0%, 100% { opacity: 0.6; scale: 0.98; }
+  50% { opacity: 1; scale: 1.03; }
+}
+
+@keyframes dashboard-hero-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+
+@keyframes dashboard-hero-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes dashboard-hero-twinkle {
+  0%, 100% { opacity: 0.65; transform: scale(0.85) rotate(-12deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(12deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .auth-bubble {
+  .auth-bubble,
+  .dashboard-hero-ring,
+  .dashboard-hero-card,
+  .dashboard-hero-brain,
+  .dashboard-hero-sparkle {
     animation: none;
     will-change: auto;
   }
