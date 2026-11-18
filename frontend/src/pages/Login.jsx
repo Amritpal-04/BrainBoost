@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { ArrowRight, Brain, Sparkles } from "lucide-react";
+import { Brain, Sparkles } from "lucide-react";
 import { handleError, handleSuccess } from "../utils";
 
 function Login() {
@@ -144,7 +144,6 @@ function Login() {
               disabled={isSubmitting}
             >
               {isSubmitting ? "Logging in..." : "Log in"}
-              {!isSubmitting && <ArrowRight size={18} />}
             </button>
           </form>
 

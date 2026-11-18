@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { ArrowRight, Brain, Sparkles } from "lucide-react";
+import { Brain, Sparkles } from "lucide-react";
 import phoneLabels from "react-phone-number-input/locale/en.json";
 import { handleError, handleSuccess } from "../utils";
 
@@ -414,7 +414,6 @@ function Signup() {
                 disabled={isSubmitting}
               >
                 {step === 1 ? "Continue" : isSubmitting ? "Creating account..." : "Create account"}
-                {step === 1 && <ArrowRight size={18} />}
               </button>
             </div>
           </form>
