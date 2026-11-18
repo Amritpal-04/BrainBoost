@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { ArrowRight, Brain, Sparkles } from "lucide-react";
 import { handleError, handleSuccess } from "../utils";
+import { signIn } from "../auth";
 
 function Login() {
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -23,20 +25,7 @@ function Login() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginInfo),
-      });
-      const result = await response.json();
-
-      if (!response.ok || !result.success || !result.token) {
-        handleError(result.message || "Unable to log in. Please try again.");
-        return;
-      }
-
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user));
+      const result = await signIn(loginInfo);
       handleSuccess(result.message || "Welcome back!");
       navigate("/home");
     } catch (error) {
@@ -99,6 +88,11 @@ function Login() {
             Your next bright idea is just around the corner.
           </p>
 
+          {state?.accountCreated && (
+            <p role="status" className="mt-4 rounded-xl bg-violet-50 p-3 text-sm text-violet-900">
+              Your account was created. Log in to continue.
+            </p>
+          )}
           <form className="mt-8 space-y-5" onSubmit={handleLogin}>
             <div>
               <label

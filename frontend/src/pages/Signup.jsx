@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { ArrowRight, Brain, Sparkles } from "lucide-react";
-import { handleError, handleSuccess } from "../utils";
+import { handleError } from "../utils";
+import { signIn } from "../auth";
 
 function Signup() {
   const [signupInfo, setSignupInfo] = useState({
@@ -44,8 +45,12 @@ function Signup() {
         return;
       }
 
-      handleSuccess(result.message || "Signup successful.");
-      setTimeout(() => navigate("/login"), 1000);
+      try {
+        await signIn({ email, password });
+        navigate("/home", { replace: true });
+      } catch {
+        navigate("/login", { replace: true, state: { accountCreated: true } });
+      }
     } catch (error) {
       handleError(
         error instanceof TypeError
