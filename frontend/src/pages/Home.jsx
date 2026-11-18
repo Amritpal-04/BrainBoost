@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -19,8 +19,10 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import { fetchSummary } from "../services/quizApi";
+import { useTheme } from "../context/ThemeContext";
 
-const practiceModes = [
+export const practiceModes = [
   {
     id: "mathematics",
     name: "Mathematics",
@@ -49,6 +51,39 @@ const practiceModes = [
 const difficulties = ["Easy", "Medium", "Hard"];
 const panelClass = "rounded-2xl border border-violet-100 bg-white";
 const practiceLinkClass = "inline-flex min-h-11 w-fit items-center gap-2 rounded-lg text-sm font-bold text-violet-700 hover:text-violet-900 hover:underline";
+const genderLabels = {
+  male: "Male",
+  female: "Female",
+  woman: "Woman",
+  man: "Man",
+  nonbinary: "Non-binary",
+  other: "Other",
+  "prefer-not-to-say": "Prefer not to say",
+};
+const educationLevelLabels = {
+  primary: "Primary school",
+  middle: "Middle school",
+  high: "High school",
+  college: "College or university",
+  other: "Other",
+};
+const learningGoalLabels = {
+  math: "Improve math skills",
+  logic: "Build logical thinking",
+  calculation: "Improve calculation speed",
+  confidence: "Build learning confidence",
+  other: "Other",
+};
+
+function formatBirthDate(value) {
+  if (!value) {
+    return "Unavailable";
+  }
+
+  const [year, month, day] = String(value).slice(0, 10).split("-").map(Number);
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "long" })
+    .format(new Date(year, month - 1, day));
+}
 
 function PracticeLink() {
   return (
@@ -58,7 +93,38 @@ function PracticeLink() {
   );
 }
 
-function ProgressPanel() {
+function useQuizSummary() {
+  const [summary, setSummary] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    fetchSummary()
+      .then((data) => {
+        if (active) setSummary(data);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return summary;
+}
+
+function modeLabel(modeId) {
+  return practiceModes.find((mode) => mode.id === modeId)?.name || "Practice";
+}
+
+function ProgressPanel({ summary }) {
+  const stats = [
+    { label: "Rounds completed", value: String(summary?.roundsCompleted ?? 0) },
+    {
+      label: "Average accuracy",
+      value: summary?.averageAccuracy == null ? "—" : `${summary.averageAccuracy}%`,
+    },
+    { label: "Latest score", value: summary?.latestScore ?? "—" },
+  ];
+
   return (
     <section aria-labelledby="progress-heading" className={`${panelClass} p-5 sm:p-6`}>
       <div className="flex items-center gap-3">
@@ -68,11 +134,7 @@ function ProgressPanel() {
         <h2 id="progress-heading" className="text-lg font-extrabold">Progress at a glance</h2>
       </div>
       <dl className="mt-5 grid grid-cols-3 gap-2">
-        {[
-          { label: "Rounds completed", value: "0" },
-          { label: "Average accuracy", value: "—" },
-          { label: "Latest score", value: "—" },
-        ].map(({ label, value }) => (
+        {stats.map(({ label, value }) => (
           <div key={label} className="flex flex-col gap-1 rounded-xl bg-slate-50 px-2 py-3 sm:px-3">
             <dt className="order-2 text-xs font-medium text-slate-600 sm:text-sm">{label}</dt>
             <dd className="text-2xl font-extrabold">
@@ -81,12 +143,18 @@ function ProgressPanel() {
           </div>
         ))}
       </dl>
-      <p className="mt-4 text-sm leading-6 text-slate-600">Complete a round to see your accuracy and score here.</p>
+      <p className="mt-4 text-sm leading-6 text-slate-600">
+        {summary?.roundsCompleted
+          ? "Your accuracy and latest score update after each quiz."
+          : "Complete a round to see your accuracy and score here."}
+      </p>
     </section>
   );
 }
 
-function ActivityPanel({ showViewAll = false }) {
+function ActivityPanel({ showViewAll = false, summary }) {
+  const recent = summary?.recent ?? [];
+
   return (
     <section aria-labelledby="activity-heading" className={`${panelClass} p-5 sm:p-6`}>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
@@ -104,10 +172,26 @@ function ActivityPanel({ showViewAll = false }) {
           </Link>
         )}
       </div>
-      <div className="mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4">
-        <p className="text-sm font-bold">No completed rounds yet</p>
-        <p className="mt-1 text-sm leading-6 text-slate-600">Your completed rounds will show up here.</p>
-      </div>
+      {recent.length === 0 ? (
+        <div className="mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4">
+          <p className="text-sm font-bold">No completed rounds yet</p>
+          <p className="mt-1 text-sm leading-6 text-slate-600">Your completed rounds will show up here.</p>
+        </div>
+      ) : (
+        <ul className="mt-5 grid gap-2">
+          {recent.map((attempt) => (
+            <li key={attempt.id} className="rounded-xl bg-slate-50 px-4 py-3">
+              <p className="text-sm font-bold">
+                {modeLabel(attempt.modeId)}
+                {attempt.topic ? ` · ${attempt.topic}` : ""}
+              </p>
+              <p className="mt-1 text-sm text-slate-600">
+                {attempt.score}/{attempt.total} · {attempt.difficulty}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
@@ -116,6 +200,7 @@ export default function Home() {
   const { name } = useOutletContext();
   const { hash } = useLocation();
   const practiceSection = useRef(null);
+  const summary = useQuizSummary();
   const firstName = name.split(/\s+/)[0];
 
   useEffect(() => {
@@ -169,20 +254,22 @@ export default function Home() {
       </section>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <ProgressPanel />
-        <ActivityPanel showViewAll />
+        <ProgressPanel summary={summary} />
+        <ActivityPanel showViewAll summary={summary} />
       </div>
     </>
   );
 }
 
 export function StudentProgress() {
+  const summary = useQuizSummary();
+
   return (
     <>
       <h1 className="text-3xl font-black tracking-tight">My Progress</h1>
       <div className="mt-5 grid gap-4 md:grid-cols-2">
-        <ProgressPanel />
-        <ActivityPanel />
+        <ProgressPanel summary={summary} />
+        <ActivityPanel summary={summary} />
       </div>
       <div className="mt-3"><PracticeLink /></div>
     </>
@@ -191,6 +278,7 @@ export function StudentProgress() {
 
 export function StudentProfile() {
   const { user, name, initials } = useOutletContext();
+  const { theme, setTheme } = useTheme();
 
   return (
     <>
@@ -206,7 +294,61 @@ export function StudentProfile() {
             <dt className="text-sm font-medium text-slate-600">Email address</dt>
             <dd className="mt-1 wrap-anywhere font-bold">{user?.email || "Unavailable"}</dd>
           </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Username</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{user?.username ? `@${user.username}` : "Unavailable"}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Birthday</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{formatBirthDate(user?.birthDate)}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Gender</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{genderLabels[user?.gender] || "Unavailable"}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Phone number</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{user?.phoneNumber || "Unavailable"}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Phone country</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">{user?.phoneCountry || "Unavailable"}</dd>
+          </div>
+          {user?.educationLevel && (
+            <div>
+              <dt className="text-sm font-medium text-slate-600">Education level</dt>
+              <dd className="mt-1 wrap-anywhere font-bold">{educationLevelLabels[user.educationLevel] || user.educationLevel}</dd>
+            </div>
+          )}
+          {user?.learningGoal && (
+            <div>
+              <dt className="text-sm font-medium text-slate-600">Learning goal</dt>
+              <dd className="mt-1 wrap-anywhere font-bold">{learningGoalLabels[user.learningGoal] || user.learningGoal}</dd>
+            </div>
+          )}
         </dl>
+        <div className="mt-6 border-t border-slate-200 pt-5">
+          <h2 className="text-lg font-extrabold">Appearance</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-600">
+            Choose how BrainBoost looks on this device.
+          </p>
+          <label htmlFor="theme-preference" className="mt-5 block text-sm font-medium text-slate-600">
+            Website theme
+          </label>
+          <select
+            id="theme-preference"
+            value={theme}
+            onChange={(event) => setTheme(event.target.value)}
+            className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-900 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          >
+            <option value="default">Default (recommended)</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Default follows your device’s appearance setting.
+          </p>
+        </div>
       </section>
     </>
   );
@@ -269,9 +411,15 @@ export function PracticeSetup() {
           {topics && <PracticeOptions label="Topic" name="topic" options={topics} value={topic} onChange={updateOption} />}
           <PracticeOptions label="Difficulty" name="difficulty" options={difficulties} value={difficulty} onChange={updateOption} />
         </div>
-        <p className="mt-6 rounded-xl bg-violet-50 px-4 py-3 text-sm leading-6 text-violet-900">
-          Practice rounds will be available when quizzes are added.
-        </p>
+        <Link
+          className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl bg-violet-700 px-5 text-sm font-bold text-white hover:bg-violet-800"
+          to={`/home/practice/${mode.id}/quiz?${new URLSearchParams({
+            ...(topic ? { topic } : {}),
+            difficulty,
+          })}`}
+        >
+          Start quiz <ArrowRight size={16} aria-hidden="true" />
+        </Link>
       </section>
     </>
   );

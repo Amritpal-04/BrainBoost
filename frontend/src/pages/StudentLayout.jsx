@@ -23,7 +23,7 @@ const navigation = [
 
 function getStoredUser() {
   try {
-    return JSON.parse(localStorage.getItem("user") || "null");
+    return JSON.parse(sessionStorage.getItem("user") || "null");
   } catch {
     return null;
   }
@@ -31,7 +31,7 @@ function getStoredUser() {
 
 export default function StudentLayout() {
   const navigate = useNavigate();
-  if (!localStorage.getItem("token")) {
+  if (!sessionStorage.getItem("token")) {
     return <Navigate to="/login" replace />;
   }
 
@@ -41,14 +41,14 @@ export default function StudentLayout() {
     .map((part) => Array.from(part)[0]).join("").toUpperCase();
 
   function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     handleSuccess("You have logged out.");
     navigate("/login", { replace: true });
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f7fc] text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-violet-100 bg-white">
         <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-4 px-4 sm:px-8 md:grid-cols-[1fr_auto_1fr]">
           <Link to="/home" className="my-4 flex w-fit items-center gap-2.5 rounded-lg font-extrabold tracking-tight">

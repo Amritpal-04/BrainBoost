@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { ArrowRight, Brain, Sparkles } from "lucide-react";
+import { Brain, Sparkles } from "lucide-react";
 import { handleError, handleSuccess } from "../utils";
-import { signIn } from "../auth";
 
 function Login() {
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { state } = useLocation();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -25,7 +23,20 @@ function Login() {
 
     setIsSubmitting(true);
     try {
-      const result = await signIn(loginInfo);
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginInfo),
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result.success || !result.token) {
+        handleError(result.message || "Unable to log in. Please try again.");
+        return;
+      }
+
+      sessionStorage.setItem("token", result.token);
+      sessionStorage.setItem("user", JSON.stringify(result.user));
       handleSuccess(result.message || "Welcome back!");
       navigate("/home");
     } catch (error) {
@@ -42,11 +53,11 @@ function Login() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-violet-50 via-white to-cyan-50 px-4 py-10">
+    <main className="auth-page flex min-h-screen items-center justify-center bg-gradient-to-br from-violet-50 via-white to-cyan-50 px-4 py-10">
       <section className="grid w-full max-w-5xl overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-violet-950/10 md:grid-cols-2">
         <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 p-12 text-white md:flex">
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10" />
-          <div className="absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-cyan-300/10" />
+          <div className="auth-bubble auth-bubble--top absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10" />
+          <div className="auth-bubble auth-bubble--bottom absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-cyan-300/10" />
           <div className="relative flex items-center gap-3">
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/15">
               <Brain size={25} />
@@ -88,11 +99,6 @@ function Login() {
             Your next bright idea is just around the corner.
           </p>
 
-          {state?.accountCreated && (
-            <p role="status" className="mt-4 rounded-xl bg-violet-50 p-3 text-sm text-violet-900">
-              Your account was created. Log in to continue.
-            </p>
-          )}
           <form className="mt-8 space-y-5" onSubmit={handleLogin}>
             <div>
               <label
@@ -138,7 +144,6 @@ function Login() {
               disabled={isSubmitting}
             >
               {isSubmitting ? "Logging in..." : "Log in"}
-              {!isSubmitting && <ArrowRight size={18} />}
             </button>
           </form>
 

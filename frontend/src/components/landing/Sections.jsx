@@ -56,7 +56,7 @@ export function HeroSection() {
 }
 
 export function PracticeSection() {
-  const signedIn = Boolean(localStorage.getItem("token"));
+  const signedIn = Boolean(sessionStorage.getItem("token"));
 
   return (
     <section id="modes" className="bb-section bb-lavender" aria-labelledby="bb-modes-title">
