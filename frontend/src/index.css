@@ -69,6 +69,31 @@ body {
   transform-origin: center;
 }
 
+.abacus-course-layout {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.abacus-lesson-sidebar {
+  max-height: min(65vh, 32rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+@media (min-width: 64rem) {
+  .abacus-course-layout {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+
+  .abacus-lesson-sidebar {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+}
+
 @keyframes dashboard-hero-ring {
   0%, 100% { opacity: 0.6; scale: 0.98; }
   50% { opacity: 1; scale: 1.03; }

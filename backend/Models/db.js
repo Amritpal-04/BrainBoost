@@ -9,7 +9,7 @@ async function connectDatabase() {
 
     try {
         await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
-        console.log('MongoDB connected successfully');
+        console.log(`MongoDB connected to "${mongoose.connection.name}" at ${mongoose.connection.host}`);
     } catch (error) {
         console.error(`MongoDB connection failed (${error.name}). Check MONGO_CONN and confirm MongoDB is running, then restart the backend.`);
     }
