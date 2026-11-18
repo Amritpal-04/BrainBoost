@@ -96,13 +96,13 @@ function RankedList({ entries }) {
           const isCurrentUser = player.username === currentUsername;
           return (
             <li key={player.username} className={`flex items-center gap-3 px-4 py-3.5 sm:gap-4 sm:px-6 ${isCurrentUser ? "bg-violet-50" : ""}`}>
-              <span className={`w-7 shrink-0 text-center text-sm font-extrabold ${isCurrentUser ? "text-violet-800" : "text-slate-500"}`}>{index + 4}</span>
+              <span className={`w-7 shrink-0 text-center text-sm font-extrabold ${isCurrentUser ? "text-violet-800 dark:text-violet-200" : "text-slate-500 dark:text-slate-400"}`}>{index + 4}</span>
               <Avatar username={player.username} highlighted={isCurrentUser} />
               <div className="min-w-0 flex-1">
-                <p className={`truncate text-sm font-bold ${isCurrentUser ? "text-violet-900" : "text-slate-800"}`}>@{player.username}</p>
-                {isCurrentUser && <p className="mt-0.5 text-xs font-semibold text-violet-700">You</p>}
+                <p className={`truncate text-sm font-bold ${isCurrentUser ? "text-violet-900 dark:text-white" : "text-white dark:text-violet-700"}`}>@{player.username}</p>
+                {isCurrentUser && <p className="mt-0.5 text-xs font-semibold text-violet-700 dark:text-violet-300">You</p>}
               </div>
-              <p className="shrink-0 text-sm font-extrabold text-slate-900">{player.points.toLocaleString()} <span className="font-medium text-slate-500">pts</span></p>
+              <p className="shrink-0 text-sm font-extrabold text-slate-900 dark:text-slate-100">{player.points.toLocaleString()} <span className="font-medium text-slate-500 dark:text-slate-400">pts</span></p>
             </li>
           );
         })}
@@ -113,14 +113,14 @@ function RankedList({ entries }) {
 
 function YourStanding({ player, rank }) {
   return (
-    <section aria-label="Your leaderboard standing" className="flex items-center gap-3 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-4 sm:gap-4 sm:px-6">
-      <span className="w-7 shrink-0 text-center text-sm font-black text-violet-800">{rank}</span>
+    <section aria-label="Your leaderboard standing" className="flex items-center gap-3 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-4 text-slate-900 dark:border-violet-800 dark:bg-violet-950 dark:text-slate-100 sm:gap-4 sm:px-6">
+      <span className="w-7 shrink-0 text-center text-sm font-black text-violet-800 dark:text-violet-200">{rank}</span>
       <Avatar username={player.username} highlighted />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-extrabold text-violet-900">@{player.username}</p>
-        <p className="mt-0.5 text-xs font-semibold text-violet-700">Your place · sample ranking</p>
+        <p className="truncate text-sm font-extrabold text-violet-900 dark:text-violet-100">@{player.username}</p>
+        <p className="mt-0.5 text-xs font-semibold text-violet-700 dark:text-violet-300">Your place · sample ranking</p>
       </div>
-      <p className="shrink-0 text-sm font-extrabold text-violet-900">{player.points.toLocaleString()} <span className="font-medium">pts</span></p>
+      <p className="shrink-0 text-sm font-extrabold text-violet-900 dark:text-violet-100">{player.points.toLocaleString()} <span className="font-medium">pts</span></p>
     </section>
   );
 }
