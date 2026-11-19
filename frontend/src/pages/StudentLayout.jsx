@@ -1,5 +1,6 @@
 import {
   Brain,
+  BookOpen,
   ChartNoAxesColumnIncreasing,
   ChevronDown,
   LayoutDashboard,
@@ -18,6 +19,7 @@ import { handleSuccess } from "../utils";
 
 const navigation = [
   { label: "Dashboard", to: "/home", icon: LayoutDashboard },
+  { label: "Abacus Lessons", to: "/home/abacus", icon: BookOpen },
   { label: "My Progress", to: "/home/progress", icon: ChartNoAxesColumnIncreasing },
   { label: "Leaderboard", to: "/home/leaderboard", icon: Trophy },
   { label: "Profile", to: "/home/profile", icon: UserRound },
@@ -60,7 +62,7 @@ export default function StudentLayout() {
             <span className="text-lg">BrainBoost</span>
           </Link>
 
-          <nav aria-label="Student navigation" className="col-span-2 row-start-2 flex items-center gap-1 pb-3 md:col-span-1 md:col-start-2 md:row-start-1 md:gap-2 md:pb-0">
+          <nav aria-label="Student navigation" className="col-span-2 row-start-2 flex min-w-0 items-center gap-1 overflow-x-auto pb-3 md:col-span-1 md:col-start-2 md:row-start-1 md:gap-2 md:pb-0">
             {navigation.map(({ label, to, icon: Icon }) => (
               <NavLink
                 key={to}

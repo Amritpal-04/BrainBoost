@@ -12,6 +12,24 @@ function getDefaultPhoneCountry() {
   return region || "US";
 }
 
+function getAge(birthDate) {
+  if (!birthDate) {
+    return null;
+  }
+
+  const [year, month, day] = birthDate.split("-").map(Number);
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  if (
+    today.getMonth() + 1 < month ||
+    (today.getMonth() + 1 === month && today.getDate() < day)
+  ) {
+    age -= 1;
+  }
+
+  return Number.isFinite(age) && age >= 0 ? age : null;
+}
+
 function Signup() {
   const [signupInfo, setSignupInfo] = useState(() => ({
     name: "",
@@ -291,7 +309,7 @@ function Signup() {
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="birthDate">
-                    Birthday
+                    Birthday (required)
                   </label>
                   <input
                     className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
@@ -304,6 +322,11 @@ function Signup() {
                     onChange={handleChange}
                     required
                   />
+                  {getAge(signupInfo.birthDate) != null && (
+                    <p className="mt-2 text-sm text-slate-600" aria-live="polite">
+                      Age: {getAge(signupInfo.birthDate)} years old
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="gender">
@@ -329,7 +352,7 @@ function Signup() {
                   <Suspense fallback={<div className="min-h-12 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">Loading country selector…</div>}>
                     <PhoneInput
                       className="signup-phone flex min-h-12 w-full items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-slate-900 outline-none transition focus-within:border-violet-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-violet-100"
-                      country={signupInfo.phoneCountry}
+                      defaultCountry={signupInfo.phoneCountry}
                       international
                       withCountryCallingCode
                       countryCallingCodeEditable={false}

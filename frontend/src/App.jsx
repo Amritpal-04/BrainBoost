@@ -8,6 +8,7 @@ import Home, { PracticeSetup, StudentProfile, StudentProgress } from './pages/Ho
 import Quiz from './pages/Quiz';
 import StudentLayout from './pages/StudentLayout';
 import Leaderboard from './pages/Leaderboard';
+import Abacus from './pages/Abacus';
 
 function App() {
   const { pathname, hash } = useLocation();
@@ -29,6 +30,7 @@ function App() {
           <Route path="progress" element={<StudentProgress />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="profile" element={<StudentProfile />} />
+          <Route path="abacus" element={<Abacus />} />
         </Route>
       </Routes>
     </div>

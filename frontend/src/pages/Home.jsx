@@ -85,6 +85,24 @@ function formatBirthDate(value) {
     .format(new Date(year, month - 1, day));
 }
 
+function getAge(value) {
+  if (!value) {
+    return null;
+  }
+
+  const [year, month, day] = String(value).slice(0, 10).split("-").map(Number);
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  if (
+    today.getMonth() + 1 < month ||
+    (today.getMonth() + 1 === month && today.getDate() < day)
+  ) {
+    age -= 1;
+  }
+
+  return Number.isFinite(age) && age >= 0 ? age : null;
+}
+
 function PracticeLink() {
   return (
     <Link className={practiceLinkClass} to="/home#practice">
@@ -279,6 +297,7 @@ export function StudentProgress() {
 export function StudentProfile() {
   const { user, name, initials } = useOutletContext();
   const { theme, setTheme } = useTheme();
+  const age = getAge(user?.birthDate);
 
   return (
     <>
@@ -301,6 +320,12 @@ export function StudentProfile() {
           <div>
             <dt className="text-sm font-medium text-slate-600">Birthday</dt>
             <dd className="mt-1 wrap-anywhere font-bold">{formatBirthDate(user?.birthDate)}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-600">Age</dt>
+            <dd className="mt-1 wrap-anywhere font-bold">
+              {age == null ? "Unavailable" : `${age} years old`}
+            </dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-slate-600">Gender</dt>

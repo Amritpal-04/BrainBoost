@@ -112,6 +112,37 @@ Never store plain-text passwords. Keep session credentials out of
 browser local storage. Use HTTPS and secure cookie settings in
 production.
 
+### Shared MongoDB for team development
+
+Pushing code to GitHub does not push MongoDB records. The default
+`backend/.env.example` URI uses MongoDB on the developer's own computer,
+so a teammate using that default writes to a different database.
+
+To share signups during development:
+
+1. Choose one shared MongoDB Atlas cluster. Create a database user with
+   read/write access to the `brainboost` database, and allow each
+   teammate's IP address in the cluster network access settings.
+2. Each teammate copies `backend/.env.example` to `backend/.env` and
+   sets `MONGO_CONN` to the same Atlas connection string, including the
+   database name:
+
+   ``` text
+   mongodb+srv://<database-user>:<url-encoded-password>@<cluster-host>/brainboost?retryWrites=true&w=majority
+   ```
+
+3. Keep the real URI and database password only in the ignored
+   `backend/.env` file. Never commit or send database credentials in
+   source code or chat.
+4. Start the backend and confirm its log names the `brainboost` database
+   and the shared cluster host. Connect MongoDB Compass to that same
+   URI, open the `brainboost` database, and check its `users` collection
+   for new signups.
+
+Every developer's backend and Compass must point to the same cluster and
+database. Records previously created in a local MongoDB instance are not
+copied to Atlas automatically.
+
 ## 4. Roles and permissions
 
 ### Student
