@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import Home, { PracticeSetup, StudentProfile, StudentProgress } from './pages/Home';
 import Quiz from './pages/Quiz';
 import StudentLayout from './pages/StudentLayout';
+import Leaderboard from './pages/Leaderboard';
 
 function App() {
   const { pathname, hash } = useLocation();
@@ -26,6 +27,7 @@ function App() {
           <Route path="practice/:modeId" element={<PracticeSetup />} />
           <Route path="practice/:modeId/quiz" element={<Quiz />} />
           <Route path="progress" element={<StudentProgress />} />
+          <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="profile" element={<StudentProfile />} />
         </Route>
       </Routes>
