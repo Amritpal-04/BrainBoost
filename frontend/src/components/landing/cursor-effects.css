@@ -1,0 +1,76 @@
+/* Independent transform properties keep pointer movement separate from GSAP reveals. */
+.bb-brain-tilt {
+  width: 83%;
+  transform: perspective(800px) rotateX(var(--brain-x, 0deg)) rotateY(var(--brain-y, 0deg));
+}
+
+.bb-brain-tilt .bb-brain-image { width: 100%; }
+
+.bb-cursor-enabled .bb-section {
+  isolation: isolate;
+  --glow-strength: .065;
+}
+
+.bb-cursor-enabled .bb-hero { --glow-strength: .12; }
+.bb-cursor-enabled #why-brainboost { --glow-strength: .08; }
+.bb-cursor-enabled .bb-learning { --glow-strength: .035; }
+.bb-cursor-enabled .bb-final { --glow-strength: .025; }
+
+.bb-cursor-enabled .bb-section::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--pointer-opacity, 0);
+  background:
+    radial-gradient(ellipse 420px 350px at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      rgb(139 53 255 / var(--glow-strength)), transparent 100%),
+    radial-gradient(ellipse 660px 480px at calc(var(--pointer-x, 50%) + 90px) calc(var(--pointer-y, 50%) + 60px),
+      rgb(220 202 255 / var(--glow-strength)), transparent 100%);
+}
+
+.bb-cursor-enabled :is(.bb-button, .bb-text-link) {
+  translate: var(--magnet-x, 0px) var(--magnet-y, 0px);
+  scale: var(--magnet-scale, 1);
+}
+
+.bb-cursor-enabled .bb-art-field .bb-orbit-one { animation: bb-orbit-drift 60s linear infinite; }
+.bb-cursor-enabled .bb-art-field .bb-orbit-two { animation: bb-orbit-drift 75s linear infinite reverse; }
+@keyframes bb-orbit-drift { to { transform: rotate(360deg); } }
+
+.bb-mode {
+  position: relative;
+  isolation: isolate;
+  --card-glow: 139 53 255;
+  transition: translate .24s, box-shadow .24s, border-color .24s;
+}
+
+.bb-mode-logical-thinking { --card-glow: 173 138 230; }
+.bb-mode-fast-calculation { --card-glow: 105 186 190; }
+
+.bb-cursor-enabled .bb-mode::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--pointer-opacity, 0);
+  background: radial-gradient(240px circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    rgb(var(--card-glow) / .14), transparent 100%);
+}
+
+.bb-mode:focus-within {
+  border-color: #c9a4f5;
+  box-shadow: 0 12px 28px rgb(51 26 110 / 9%);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .bb-mode:hover { translate: 0 -3px; border-color: #c9a4f5; }
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .landing .bb-mode:hover { translate: none; }
+  .landing .bb-mode:hover .bb-mode-icon { scale: 1; }
+}
