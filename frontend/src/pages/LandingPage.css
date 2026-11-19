@@ -157,7 +157,8 @@
   width: 83%;
   height: auto;
   filter: drop-shadow(0 24px 24px rgb(70 24 163 / 20%));
-  animation: bb-float 7s ease-in-out infinite;
+  transform-origin: 50% 58%;
+  animation: bb-brain-breathe 5.6s ease-in-out infinite;
 }
 
 .bb-symbol, .bb-art-tile {
@@ -185,6 +186,19 @@
 .bb-divide { right: 2%; bottom: 18%; rotate: -10deg; animation-delay: -4s; }
 .bb-minus { left: 6%; bottom: 13%; rotate: 9deg; animation-delay: -6s; }
 @keyframes bb-float { 50% { transform: translateY(-9px); } }
+@keyframes bb-brain-breathe {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    filter: drop-shadow(0 24px 24px rgb(70 24 163 / 20%));
+  }
+  38% {
+    transform: translateY(-11px) scale(1.025) rotate(-1deg);
+    filter: drop-shadow(0 30px 28px rgb(111 52 211 / 28%));
+  }
+  68% {
+    transform: translateY(-5px) scale(1.012) rotate(1deg);
+  }
+}
 
 .bb-scroll {
   position: absolute;
