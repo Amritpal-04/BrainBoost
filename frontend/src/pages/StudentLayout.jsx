@@ -3,6 +3,7 @@ import {
   ChartNoAxesColumnIncreasing,
   ChevronDown,
   LayoutDashboard,
+  Trophy,
   LogOut,
   UserRound,
 } from "lucide-react";
@@ -18,6 +19,7 @@ import { handleSuccess } from "../utils";
 const navigation = [
   { label: "Dashboard", to: "/home", icon: LayoutDashboard },
   { label: "My Progress", to: "/home/progress", icon: ChartNoAxesColumnIncreasing },
+  { label: "Leaderboard", to: "/home/leaderboard", icon: Trophy },
   { label: "Profile", to: "/home/profile", icon: UserRound },
 ];
 
