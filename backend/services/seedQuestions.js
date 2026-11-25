@@ -3,12 +3,14 @@ const Question = require("../Models/Question");
 const { questions } = require("../data/questions");
 
 async function seedQuestions() {
-  if (mongoose.connection.readyState !== 1) {
+  if (process.env.SEED_QUESTIONS !== "true") {
+    console.log("Question seeding skipped. Set SEED_QUESTIONS=true to enable it.");
     return;
   }
 
-  const keys = questions.map((question) => question.key);
-  await Question.deleteMany({ key: { $nin: keys } });
+  if (mongoose.connection.readyState !== 1) {
+    return;
+  }
 
   await Question.bulkWrite(
     questions.map((question) => ({

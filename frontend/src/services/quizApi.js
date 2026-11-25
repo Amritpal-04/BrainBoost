@@ -36,3 +36,7 @@ export function submitQuiz(body) {
 export function fetchSummary() {
   return request("/quiz/summary");
 }
+
+export function fetchLeaderboard(timeframe) {
+  return request(`/quiz/leaderboard?timeframe=${encodeURIComponent(timeframe)}`);
+}

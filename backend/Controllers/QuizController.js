@@ -145,4 +145,52 @@ const summary = async (req, res) => {
   }
 };
 
-module.exports = { listQuestions, submitQuiz, summary };
+const leaderboard = async (req, res) => {
+  try {
+    const timeframe = String(req.query.timeframe || "daily").toLowerCase();
+    if (!["daily", "weekly", "all-time"].includes(timeframe)) {
+      return res.status(400).json({ success: false, message: "Choose daily, weekly, or all-time rankings." });
+    }
+
+    const now = new Date();
+    const start = new Date(now);
+    if (timeframe === "daily") {
+      start.setUTCHours(0, 0, 0, 0);
+    } else if (timeframe === "weekly") {
+      start.setUTCHours(0, 0, 0, 0);
+      start.setUTCDate(start.getUTCDate() - ((start.getUTCDay() + 6) % 7));
+    }
+
+    const match = timeframe === "all-time" ? {} : { createdAt: { $gte: start, $lte: now } };
+    const totals = await QuizAttempt.aggregate([
+      { $match: match },
+      { $group: { _id: "$userId", points: { $sum: "$score" } } },
+      { $lookup: { from: "users", localField: "_id", foreignField: "_id", as: "user" } },
+      { $unwind: "$user" },
+      { $project: { _id: 0, userId: "$_id", username: "$user.username", points: 1 } },
+      { $sort: { points: -1, username: 1 } },
+    ]);
+
+    const ranked = totals.map((entry, index) => ({
+      username: entry.username,
+      points: entry.points,
+      rank: index + 1,
+      isCurrentUser: String(entry.userId) === req.user.id,
+    }));
+    const currentUser = ranked.find((entry) => entry.isCurrentUser) || null;
+
+    return res.json({
+      success: true,
+      data: {
+        entries: ranked.slice(0, 50).map(({ username, points, rank, isCurrentUser }) => ({ username, points, rank, isCurrentUser })),
+        currentUser: currentUser
+          ? { username: currentUser.username, points: currentUser.points, rank: currentUser.rank }
+          : null,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Could not load the leaderboard.", error: error.message });
+  }
+};
+
+module.exports = { listQuestions, submitQuiz, summary, leaderboard };
